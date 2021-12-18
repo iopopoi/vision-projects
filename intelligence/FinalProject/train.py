@@ -24,8 +24,8 @@ if __name__ == '__main__':
     # hyperparameters
     batch_size = 32
     learning_rate = 0.001
-    num_epoch = 20
-    Reguli = 0.001
+    num_epoch = 50
+    Reguli = 0
 
     # --  setting -----
     #  1. model type - "Embedding or origin Matrix factorization"
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     size_valdata = batch_size * 500
 
     parser = argparse.ArgumentParser(description='2021 AI Final Project')
-    parser.add_argument('--save-model', default='model1.pt', help="Model's state_dict")
+    parser.add_argument('--save-model', default='model.pt', help="Model's state_dict")
     parser.add_argument('--dataset', default='./data', help='dataset directory')
     parser.add_argument('--batch-size', default=batch_size, help='train loader batch size') # batch size 설정
 
@@ -48,15 +48,14 @@ if __name__ == '__main__':
     if load == False:
         if type == "origin" :
             model = ModelClass()
-            criterion = nn.MSELoss()
         elif type == "Embedding" :
             model = EmbeddingLayers()
-            criterion = nn.BCEWithLogitsLoss()
             
     else:
         with open('data.pickle', 'rb') as f:
             model = pickle.load(f)
 
+    criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=Reguli) # weight_decay(regularization)
     # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)            
 
@@ -102,6 +101,14 @@ if __name__ == '__main__':
         cost_val /= size_valdata
         costL_val.append(cost_val)
         print("val cost: {:.6f}".format(cost_val))
+
+        # early stopping
+        if epoch > 0 :
+            if cost_val > costL_val[epoch-1] :
+                print("validation cost increase")
+                print("---[ early stoping]---------")
+                print("Last val cost:",cost_val)
+                break
 
     with open('data.pickle', 'wb') as f:
         pickle.dump(model, f)

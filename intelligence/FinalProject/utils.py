@@ -9,6 +9,7 @@ class RecommendationDataset(Dataset):
         self.items = torch.LongTensor(self.data_pd['itemId'])
         self.users = torch.LongTensor(self.data_pd['userId'])
         self.train = train
+        self.len = len(self.items)
         if self.train is True:
             self.ratings = torch.FloatTensor(self.data_pd['rating'])
 

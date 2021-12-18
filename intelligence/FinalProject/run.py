@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 
 from model import ModelClass
 from utils import RecommendationDataset
-
+from model import EmbeddingLayers
 
 def inference(data_loader, model):
     """ model inference """
@@ -31,7 +31,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # instantiate model
-    model = ModelClass()
+    # model = ModelClass()
+    model = EmbeddingLayers()
     model.load_state_dict(torch.load(args.load_model))
 
     # load dataset in test folder
