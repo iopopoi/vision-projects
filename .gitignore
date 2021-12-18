@@ -1,3 +1,6 @@
 intelligence/datasets/
 intelligence/**/*.pdf
 intelligence/**/*.csv
+
+!intelligence\FinalProject\report_2019028313.pdf
+!intelligence\FinalProject\report_2019028313.docx
