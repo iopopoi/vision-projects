@@ -4,3 +4,8 @@
 intelligence/datasets/
 intelligence/**/*.pdf
 intelligence/**/*.csv
+
+
+DEEPLEARNING2022/datasets/
+DEEPLEARNING2022/**/*.pdf
+DEEPLEARNING2022/**/*.csv
