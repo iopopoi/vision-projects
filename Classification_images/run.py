@@ -3,8 +3,10 @@ import os
 import matplotlib.pyplot as plt
 import torch
 from torch.utils.data import Dataset, DataLoader
-from model import RobustModel
 
+from CNN import ModelCNN
+import numpy as np
+import cv2
 
 class ImageDataset(Dataset):
     """ Image shape: 28x28x3 """
@@ -23,7 +25,10 @@ class ImageDataset(Dataset):
         img_name = self.fmtstr.format(idx)
         img_path = os.path.join(self.root_dir, img_name)
         img = plt.imread(img_path)
-        data = torch.from_numpy(img)
+        data = np.array(img)
+        data = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
+        data = torch.from_numpy(data)
+        data = torch.unsqueeze(data, 0)
         return data
 
 
@@ -35,6 +40,7 @@ def inference(data_loader, model):
 
     with torch.no_grad():
         for X in data_loader:
+
             y_hat = model(X)
             y_hat.argmax()
 
@@ -46,14 +52,15 @@ def inference(data_loader, model):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='2022 DL Term Project #1')
-    parser.add_argument('--load-model', default='model.pt', help="Model's state_dict")
+    parser.add_argument('--load_model', default='model.pt', help="Model's state_dict")
     parser.add_argument('--dataset', default='./test/', help='image dataset directory')
-    parser.add_argument('--batch-size', default=16, help='test loader batch size')
+    parser.add_argument('--batch_size', default=16, help='test loader batch size')
 
     args = parser.parse_args()
 
     # instantiate model
-    model = RobustModel()
+    # model = RobustModel(1)
+    model = ModelCNN(1)
     model.load_state_dict(torch.load(args.load_model))
 
     # load dataset in test image folder

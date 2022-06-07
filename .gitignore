@@ -11,3 +11,14 @@ DEEPLEARNING2022/**/*.pdf
 DEEPLEARNING2022/**/*.csv
 
 Classification_images/resources/
+Classification_images/__pycache__/
+
+Text_classification/RNN_project/Data/
+Text_classification/_MACOSX/
+
+vgg16.py
+vgg_train.py
+
+*.zip
+datasets/
+resources/
