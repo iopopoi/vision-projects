@@ -1,5 +1,6 @@
 import argparse
 import os
+from sklearn.model_selection import train_test_split
 import torch
 import pandas as pd
 import numpy as np
@@ -23,6 +24,9 @@ class TextDataset(Dataset):
         self.sentences_vocab = Vocabulary(vocab_size)
         self.labels_vocab = Vocabulary(vocab_size)
 
+        # for every word in sentences make vocabulary
+        # vocab.wtoi = { "word" : index } * vocab_size
+        # vocab.itow = { index : "word"} * vocab_size
         self.sentences_vocab.build_vocabulary(self.sentences)
         self.labels_vocab.build_vocabulary(self.labels, add_unk=False)
 
@@ -47,6 +51,8 @@ def make_data_loader(dataset, batch_size, batch_first, shuffle=True): #increase 
     #define loader
     loader = DataLoader(dataset, batch_size = batch_size, shuffle=shuffle,
                         collate_fn = MyCollate(pad_idx=pad_idx, batch_first=batch_first)) #MyCollate class runs __call__ method by default
+    # MyCollate: make sentences have equal length, fill with <PAD>
+    
     return loader
 
 def acc(pred,label):
@@ -126,7 +132,7 @@ if __name__ == '__main__':
     num_layers = 1
 
 
-    # Make Train Loader
+    # Make Train Loader: batch_size * sentences(equal length)
     train_dataset = TextDataset(args.data_dir, 'train', args.vocab_size)
     args.pad_idx = train_dataset.sentences_vocab.wtoi['<PAD>']
     train_loader = make_data_loader(train_dataset, args.batch_size, args.batch_first, shuffle=True)
